@@ -15,7 +15,7 @@ export default function AppContextProvider({children}) {
     const [credit, setCredit] = useState(false)
 
     
-    const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000"
+    const backendUrl = "https://raigen.onrender.com"
 
     const navigate = useNavigate()    
 
