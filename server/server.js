@@ -10,7 +10,13 @@ const PORT = process.env.PORT || 5000
 const app = express()
 
 app.use(express.json())                                                        
-app.use(cors())
+app.use(
+  cors({
+    origin: ["https://raigen-client.onrender.com"], // apna frontend ka Render URL
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 await connectDB()
 app.use("/api/users", userRouter)
 app.use("/api/image", imageRouter)
