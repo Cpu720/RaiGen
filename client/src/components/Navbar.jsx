@@ -6,6 +6,7 @@ export default function Navbar(){
 
   
   const {user,setShowLogin,logout,credit}=useContext(AppContext)
+  const [open, setOpen] = useState(false);
   
   const navigate = useNavigate()
   return(
@@ -22,14 +23,30 @@ export default function Navbar(){
                <p className="text-xs sm:text-sm front-medium text-grey-600">Credits left : {credit}</p>
              </button>
             <p className="text-grey-600 max-sm:hidden pl-4">Hi, {user.name}</p>
-             <div className="relative group">
-              <img className="w-10 drop-shadow" src={assets.profile_icon} alt="" />
-              <div className="absolute hidden group-hover:block top-0 right-0 z-10 text-black rounded pt-12">
-                  <ul className="list-none m-0 p-2 bg-white rounded-md border text-sm">
-                    <li onClick={logout} className="py-1 px-2 cursor-pointer pr-10">Logout</li>
-                  </ul>
-              </div>
-             </div>
+             <div className="relative">
+      <img
+        className="w-10 drop-shadow cursor-pointer"
+        src={assets.profile_icon}
+        alt=""
+        onClick={() => setOpen(!open)}
+      />
+
+      {open && (
+        <div className="absolute top-0 right-0 z-10 text-black rounded pt-12">
+          <ul className="list-none m-0 p-2 bg-white rounded-md border text-sm">
+            <li
+              onClick={() => {
+                logout();
+                setOpen(false); 
+              }}
+              className="py-1 px-2 cursor-pointer pr-10"
+            >
+              Logout
+            </li>
+          </ul>
+        </div>
+      )}
+    </div>
         </div>:
         <div className=" flex items-center gap-2 sm:gap-5">
             <p onClick={()=>navigate("/buycredit")} className=" cursor-pointer">pricing</p>
