@@ -7,7 +7,6 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 export default function Login(){
-    
     const [state,setState]= useState("Login");
     const {backendUrl, setToken, setUser, setShowLogin}=useContext(AppContext)
     const navigate = useNavigate();
@@ -15,15 +14,14 @@ export default function Login(){
     const [name,setName]=useState("")
     const [email,setEmail]=useState("")
     const [password,setPassword]=useState("")
+    const [loading, setLoading] = useState(false);
 
     const onSubmitHandler = async (e) =>{
         e.preventDefault();
-
+        setLoading(true);
         try{
-
             if(state === "Login"){
                const {data} = await axios.post(backendUrl + "/api/users/login",{email,password})
-
                if(data.success){
                 setToken(data.token)
                 setUser(data.user)
@@ -32,7 +30,6 @@ export default function Login(){
                }else{
                 toast.error(data.message)
                }
-
             }else{
                 const {data} = await axios.post(backendUrl + "/api/users/register",{name,email,password})
                if(data.success){
@@ -47,7 +44,8 @@ export default function Login(){
             }
         } catch (error) {
             toast.error(error.response?.data?.message || "An error occurred")
-
+        } finally {
+            setLoading(false);
         }
     }
     
@@ -63,6 +61,15 @@ export default function Login(){
 
     return(
         <div className="fixed top-0 left-0 right-0 bottom-0 z-10 backdrop-blur-sm bg-black/30 flex justify-center items-center">
+            {loading ? (
+                <div className="flex flex-col items-center justify-center bg-white p-10 rounded-xl shadow-xl">
+                    <svg className="animate-spin h-10 w-10 text-blue-600 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                    </svg>
+                    <span className="text-blue-600 font-semibold text-lg">Processing...</span>
+                </div>
+            ) : (
             <motion.form onSubmit={onSubmitHandler} className="relative bg-white p-10 rounded-xl text-slate-500" initial={{opacity:0.2,y:50}} transition={{duration:0.3}} whileInView={{opacity:1, y:50}} viewport={{once:true}} >
                <h1 className="text-center text-2xl text-neutral-700 font-medium">{state}</h1>
                <p className="text-sm">Welcome back! Please sign in to continue</p>
@@ -91,6 +98,7 @@ export default function Login(){
 
                          <img onClick={()=>setShowLogin(false)} src={assets.cross_icon} alt="" className="absolute top-5 right-5 cursor-pointer" />
             </motion.form>
+            )}
         </div>
     )
 }
